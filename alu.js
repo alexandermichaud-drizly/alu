@@ -1,14 +1,14 @@
 class Alu {
 
 	//Each "instance" of the an object must be initialized with inputs at hand. 
-	//Program assumes that inputs are eight-digit, pseudo-binary numbers, e.g. 10011011.
+	//Program assumes that inputs are eight item arrays of 1's and 0's, e.g. [0, 1, 1, 0, 0, 1, 1, 1].
 	constructor(inputA, inputB) {
 		this._alpha = inputA;
 		this._beta = inputB;
 	}
 	
 	//Once created, the same inputs can then be used to generate different results depending on the opcode passed.
-	//Program assumes that inputs are four digit, pseudo-binary numbers, e.g 1101.
+	//Program assumes that inputs are four digit, pseudo-binary numbers, e.g [0, 1, 1, 1].
 	run(opcode) {
 		//0001 --> ADD
 		//if (!opcode0] && !opcode[1] && !opcode[2] && opcode[3]) {
