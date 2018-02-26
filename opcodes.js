@@ -1,4 +1,9 @@
 //OPCODES
 
-//0001 == ADD
+//ARITHMETIC
+//0001 === ADD
+//0010 === SUBTRACT
 
+
+//LOGIC
+//1001 === INCREMENT

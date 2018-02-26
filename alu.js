@@ -2,34 +2,59 @@ class Alu {
 
 	//Each "instance" of the an object must be initialized with inputs at hand. 
 	//Program assumes that inputs are eight item arrays of 1's and 0's, e.g. [0, 1, 1, 0, 0, 1, 1, 1].
+	//The left-most bit is a signed bit, i.e 0 --> non-negative.
 	constructor(inputA, inputB) {
 		this._alpha = inputA;
 		this._beta = inputB;
+		this._outputVal = Array(8);
+		this._outputObj = {
+			'Output': [0, 0, 0, 0, 0, 0, 0, 0],
+			'Overflow': 0
+		}
 	}
 	
 	//Once created, the same inputs can then be used to generate different results depending on the opcode passed.
 	//Program assumes that inputs are four digit, pseudo-binary numbers, e.g [0, 1, 1, 1].
 	run(opcode) {
 		//0001 --> ADD
-		//if (!opcode0] && !opcode[1] && !opcode[2] && opcode[3]) {
-		return this.eightBitAdder(this._alpha, this._beta);
-		//}
+		if (!opcode[0] && !opcode[1] && !opcode[2] && opcode[3]) {
+			return this.eightBitAddition(this._alpha, this._beta);
+		}
+		
+		//0010 --> SUBTRACT
+		else if (!opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
+			return this.eightBitSubtraction(this.alpha, this._beta);
+		}
 	}
 
+	twosComplement(n) {
+		for (let i = 7; i > 0; i--) {
+			if (n[i] === 1) {
+				for (let j = i - 1; j > 0; j--) { 
+					n[j] === 1 ? n[j] = 0 : n[j] = 1;
+				}
+				break;
+			}
+		}
+		return n;
+	}
 
-	eightBitAdder(a, b) {
-		let output = Array(8);
-			
+	eightBitAddition(a, b) {
+
+		//Two's complement accounts for negatives, which by extension accounts for subtraction.
+
 		//Because there is no carryover bit in the first operation, only half adder is required.
 		let temp = this.halfAdder(a[7],b[7]);
-		output[7] = temp[0];
+		this._outputVal[7] = temp[0];
 		
 		//This is an abstraction of passing each of the remaining seven bits into full adders, while using the carry bits of previous sum in the operation for the following two bits.
-		for (let i = 6; i > -1; i--) {
+		for (let i = 6; i > 0; i--) {
 			temp = this.fullAdder(a[i], b[i], temp[1]);
-			output[i] = temp[0];
+			this._outputVal[i] = temp[0];
 		}
-		return output;
+		this._outputObj['Output'] = this._outputVal;
+		this._outputObj['Overflow'] = temp[1];
+		return this._outputObj;
 	}
 	
 
@@ -64,7 +89,14 @@ class Alu {
 		(partialSum[1] || fullSum[1]) ? carry = 1 : carry = 0;
 		return [fullSum[0], carry];
 	}
+
+	eightBitSubtraction(a, b) {
+			//Subtraction can be accomplished by converting the subtrahend to a negative number and adding the values using two's complement.
+			b[0] = 1;
+			eightBitAddition(a, b);
+	}
+
 }
 
-let test = new Alu([0, 1, 1, 0, 0, 1, 1, 1], [0, 0, 1, 0, 1, 0, 1, 1]);
+let test = new Alu([1, 1, 1, 0, 0, 1, 1, 1], [1, 0, 1, 0, 1, 0, 1, 1]);
 console.log(test.run([0, 0, 0, 1]));
