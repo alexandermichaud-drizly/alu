@@ -28,7 +28,7 @@ class Alu {
 	}
 
 	twosComplement(n) {
-		for (let i = 7; i > 0; i--) {
+		for (let i = 7; i > -1; i--) {
 			if (n[i] === 1) {
 				for (let j = i - 1; j > 0; j--) { 
 					n[j] === 1 ? n[j] = 0 : n[j] = 1;
@@ -42,13 +42,14 @@ class Alu {
 	eightBitAddition(a, b) {
 
 		//Two's complement accounts for negatives, which by extension accounts for subtraction.
+		
 
 		//Because there is no carryover bit in the first operation, only half adder is required.
 		let temp = this.halfAdder(a[7],b[7]);
 		this._outputVal[7] = temp[0];
 		
 		//This is an abstraction of passing each of the remaining seven bits into full adders, while using the carry bits of previous sum in the operation for the following two bits.
-		for (let i = 6; i > 0; i--) {
+		for (let i = 6; i > -1; i--) {
 			temp = this.fullAdder(a[i], b[i], temp[1]);
 			this._outputVal[i] = temp[0];
 		}
@@ -98,5 +99,4 @@ class Alu {
 
 }
 
-let test = new Alu([1, 1, 1, 0, 0, 1, 1, 1], [1, 0, 1, 0, 1, 0, 1, 1]);
-console.log(test.run([0, 0, 0, 1]));
+export default Alu;
