@@ -1,4 +1,4 @@
-import Alu from './alu'
+import Alu from './alu';
 
 // ***********************
 //	ALU TEST FILE
