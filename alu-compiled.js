@@ -59,8 +59,24 @@ var Alu = function () {
 		key: 'eightBitAddition',
 		value: function eightBitAddition(a, b) {
 
-			//Two's complement accounts for negatives, which by extension accounts for subtraction.
+			//Two's complement accounts for negatives, which by extension accounts for subtraction. 
 
+			//First the program must note the signs of the inputs, which will throw an overflow flag if there is carry into the sign bit.
+			var overflowSignal = void 0;
+			if (a[0] === 1 && b[0] === 1) {
+				overflowSignal = 0;
+			} else if (a[0] === 0 && b[0] === 0) {
+				overflowSignal = 1;
+			} else {
+				overflowSignal = null;
+			};
+
+			if (a[0] === 1) {
+				a = this.twosComplement(a);
+			};
+			if (b[0] === 1) {
+				b = this.twosComplement(b);
+			};
 
 			//Because there is no carryover bit in the first operation, only half adder is required.
 			var temp = this.halfAdder(a[7], b[7]);
@@ -71,8 +87,15 @@ var Alu = function () {
 				temp = this.fullAdder(a[i], b[i], temp[1]);
 				this._outputVal[i] = temp[0];
 			}
+
+			//Conversion from two's complement
+
 			this._outputObj['Output'] = this._outputVal;
-			this._outputObj['Overflow'] = temp[1];
+
+			//Checks for overflow
+			this._ouputVal[0] === overflowSignal ? this._outputObj['Overflow'] = 1 : this._ouputObj['Overflow'] = 0;
+
+			//Returns object
 			return this._outputObj;
 		}
 	}, {
