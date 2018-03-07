@@ -93,7 +93,7 @@ var Alu = function () {
 			this._outputObj['Output'] = this._outputVal;
 
 			//Checks for overflow
-			this._ouputVal[0] === overflowSignal ? this._outputObj['Overflow'] = 1 : this._ouputObj['Overflow'] = 0;
+			this._outputVal[0] === overflowSignal ? this._outputObj['Overflow'] = 1 : this._outputObj['Overflow'] = 0;
 
 			//Returns object
 			return this._outputObj;
