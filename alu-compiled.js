@@ -39,7 +39,7 @@ var Alu = function () {
 
 			//0010 --> SUBTRACT
 			else if (!opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
-					return this.eightBitSubtraction(this.alpha, this._beta);
+					return this.eightBitSubtraction(this._alpha, this._beta);
 				}
 		}
 	}, {
@@ -116,7 +116,7 @@ var Alu = function () {
 		value: function eightBitSubtraction(a, b) {
 			//Subtraction can be accomplished by converting the subtrahend to a negative number and adding the values using two's complement.
 			b[0] = 1;
-			this.eightBitAddition(a, b);
+			return this.eightBitAddition(a, b);
 		}
 	}]);
 
