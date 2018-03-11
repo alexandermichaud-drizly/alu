@@ -1,16 +1,13 @@
-class Alu {
+class ALU {
 
-	//Each "instance" of the an object must be initialized with inputs at hand. 
+	//Each "instance" of the class must be initialized with inputs at hand. 
 	//Program assumes that inputs are eight item arrays of 1's and 0's, e.g. [0, 1, 1, 0, 0, 1, 1, 1].
-	//The left-most bit is a signed bit, i.e 0 --> non-negative.
+	//Two's complement dictates that the leftmost bit will be a signed bit, and so the ALU can handle numbers from to -127 to 127.
 	constructor(inputA, inputB) {
 		this._alpha = inputA;
 		this._beta = inputB;
-		this._outputVal = Array(8);
-		this._outputObj = {
-			'Output': [0, 0, 0, 0, 0, 0, 0, 0],
-			'Overflow': 0
-		}
+		this._output = Array(8);
+		this._overflowFlag = 0
 	}
 	
 	//Once created, the same inputs can then be used to generate different results depending on the opcode passed.
@@ -25,20 +22,71 @@ class Alu {
 		else if (!opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
 			return this.eightBitSubtraction(this._alpha, this._beta);
 		}
-	}
 
-	//For the purposes of subtraction, the ALU includes a group of circuits which render the negative of a given input in two's complement.
-	twosComplement(n) {
-		for (let i = 0; i < 8; i++) {
-			//Abstraction of a NOT gate for all bits
-			n[i] ? n[i] = 0 : n[i] = 1;
+		//0011 --> INCREMENT ALPHA
+		else if (!opcode[0] && !opcode[1] && opcode[2] && opcode[3]) {
+			return this.increment(this._alpha);
+		}
+
+		//0100 --> INCREMENT BETA
+		else if (!opcode[0] && opcode[1] && !opcode[2] && !opcode[3]) {
+			return this.increment(this._beta);
+		}
+
+		//0101 --> DECREMENT ALPHA
+		else if (!opcode[0] && opcode[1] && !opcode[2] && opcode[3]) {
+			return this.decrement(this._alpha);
 		}
 		
-		//Two's complement dictates that 1 be added after the bits are flipped.
-		const ONE = [0,0,0,0,0,0,0,1];
-		let o = this.eightBitAddition(n, ONE);
+		//0110 --> DECREMENT BETA
+		else if (!opcode[0] && opcode[1] && opcode[2] && !opcode[3]) {
+			return this.decrement(this._beta);
+		}
+
+		//0111 --> LOGICALLY NEGATE ALPHA
+		else if (!opcode[0] && opcode[1] && opcode[2] && opcode[3]) {
+			return this.lNegate(this._alpha);
+		}
+
+		//1000 --> LOGICALLY NEGATE BETA
+		else if (opcode[0] && !opcode[1] && !opcode[2] && !opcode[3]) {
+			return this.lNegate(this._beta);
+		}
+
+		//1001 --> ARITHMETICALLY NEGATE ALPHA
+		else if (opcode[0] && !opcode[1] && !opcode[2] && opcode[3]) {
+			return this.aNegate(this._alpha);
+		}
+
+		//1010 --> ARTIHMETICALLY NEGATE BETA
+		else if (opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
+			return this.aNegate(this._beta);
+		}
+	}
+
+	//Logical Negation, i.e. flipping all bits
+	lNegate(n) {
+	
+		//Abstraction of a NOT gate for all bits
+		for (let i = 0; i < 8; i++) {
+			n[i] ? this._output[i] = 0 : this._output[i] = 1;	
+		}
 		
-		return o['Output'];
+		return this._output;
+	}
+
+	//Arithmetic Negation, i.e. two's complement of the input
+	aNegate(n) {
+		let m = this.lNegate(n);
+		return this.increment(m);
+	}
+	
+	increment(n) {
+		return this.eightBitAddition(n, [0,0,0,0,0,0,0,1]);
+	}
+
+	decrement(n) {
+		return this.eightBitAddition(n, [1,1,1,1,1,1,1,1]);
 	}
 
 	eightBitAddition(a, b) {
@@ -47,27 +95,25 @@ class Alu {
 		
 		//First the program must note the signs of the inputs, which will throw an overflow flag if there is carry into the sign bit.
 		let overflowSignal;
-		if (a[0] === 1 && b[0] === 1) {overflowSignal = 0}
-		else if (a[0] === 0 && b[0] === 0) {overflowSignal = 1}
+		if (a[0] && b[0]) {overflowSignal = 0}
+		else if (!a[0] && !b[0]) {overflowSignal = 1}
 		else {overflowSignal = null};
 
 		//Because there is no carryover bit in the first operation, only half adder is required.
 		let temp = this.halfAdder(a[7],b[7]);
-		this._outputVal[7] = temp[0];
+		this._output[7] = temp[0];
 		
 		//This is an abstraction of passing each of the remaining seven bits into full adders, while using the carry bits of previous sum in the operation for the following two bits.
 		for (let i = 6; i > -1; i--) {
 			temp = this.fullAdder(a[i], b[i], temp[1]);
-			this._outputVal[i] = temp[0];
+			this._output[i] = temp[0];
 		}
 
-		this._outputObj['Output'] = this._outputVal;
-
 		//Checks for overflow
-		this._outputVal[0] === overflowSignal ? this._outputObj['Overflow'] = 1 : this._outputObj['Overflow'] = 0;
+		this._output[0] === overflowSignal ? this._overflowFlag = 1 : this._overflowFlag = 0;
 
-		//Returns object
-		return this._outputObj;
+		//Returns output
+		return this._output;
 	}
 	
 
@@ -104,11 +150,11 @@ class Alu {
 	}
 
 	eightBitSubtraction(a, b) {
-			//Subtraction can be accomplished by converting the subtrahend to a negative number in two's complement notation.
-			let subtrahend = this.twosComplement(b);
+			//Subtraction can be accomplished by arithmetically negating the subtrahend.
+			let subtrahend = this.aNegate(b);
 			return this.eightBitAddition(a, subtrahend);
 	}
 
 }
 
-export default Alu;
+export default ALU;
