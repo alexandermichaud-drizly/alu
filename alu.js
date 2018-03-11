@@ -27,16 +27,18 @@ class Alu {
 		}
 	}
 
+	//For the purposes of subtraction, the ALU includes a group of circuits which render the negative of a given input in two's complement.
 	twosComplement(n) {
-		for (let i = 7; i > -1; i--) {
-			if (n[i] === 1) {
-				for (let j = i - 1; j > 0; j--) { 
-					n[j] === 1 ? n[j] = 0 : n[j] = 1;
-				}
-				break;
-			}
+		for (let i = 0; i < 8; i++) {
+			//Abstraction of a NOT gate for all bits
+			n[i] ? n[i] = 0 : n[i] = 1;
 		}
-		return n;
+		
+		//Two's complement dictates that 1 be added after the bits are flipped.
+		const ONE = [0,0,0,0,0,0,0,1];
+		let o = this.eightBitAddition(n, ONE);
+		
+		return o['Output'];
 	}
 
 	eightBitAddition(a, b) {
@@ -49,11 +51,6 @@ class Alu {
 		else if (a[0] === 0 && b[0] === 0) {overflowSignal = 1}
 		else {overflowSignal = null};
 
-
-		if (a[0] === 1) {a = this.twosComplement(a)};
-		if (b[0] === 1) {b = this.twosComplement(b)};
-		
-	
 		//Because there is no carryover bit in the first operation, only half adder is required.
 		let temp = this.halfAdder(a[7],b[7]);
 		this._outputVal[7] = temp[0];
@@ -63,8 +60,6 @@ class Alu {
 			temp = this.fullAdder(a[i], b[i], temp[1]);
 			this._outputVal[i] = temp[0];
 		}
-
-		//Conversion from two's complement
 
 		this._outputObj['Output'] = this._outputVal;
 
@@ -109,9 +104,9 @@ class Alu {
 	}
 
 	eightBitSubtraction(a, b) {
-			//Subtraction can be accomplished by converting the subtrahend to a negative number and adding the values using two's complement.
-			b[0] = 1;
-			return this.eightBitAddition(a, b);
+			//Subtraction can be accomplished by converting the subtrahend to a negative number in two's complement notation.
+			let subtrahend = this.twosComplement(b);
+			return this.eightBitAddition(a, subtrahend);
 	}
 
 }

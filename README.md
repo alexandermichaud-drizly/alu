@@ -6,14 +6,13 @@ For example, each time a method such as .fullAdder() is called, it should be und
 
 I have chosen to represent the ALU as a class. This allows the same ALU "instance" to test the different operations on the same set of inputs. I recognize that this does not cohere with how an ALU is called within a CPU, but it is marginally easier to simply call .run(opcode) rather than run(a, b, opcode) when testing with the same variables. 
 
-OPERATIONS THAT HAVE BEEN CODED
--- ADD (WITH CARRY)
+The ALU represents negatives using two's complement conversion. It cannot accomodate floating points.
 
-OPERATIONS THAT ARE IN PROGRESS
--- SUBTRACT
+OPERATIONS THAT HAVE BEEN CODED AND TESTED SUCCESSFULLY:
+ADD, SUBTRACT
 
-OPERATIONS TO BE CODED
--- INCREMENT
--- DECREMENT
--- NEGATE
+OPERATIONS THAT ARE IN PROGRESS:
+
+OPERATIONS TO BE CODED:
+INCREMENT, DECREMENT, NEGATE
 
