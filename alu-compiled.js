@@ -84,7 +84,8 @@ var ALU = function () {
 		key: 'eightBitAddition',
 		value: function eightBitAddition(a, b) {
 
-			//First the program must note the signs of the inputs, which will throw an overflow flag if there is carry into the sign bit.
+			//First the program must note the signs of the inputs.
+			//The program will raise an overflow flag if there is carry into the sign bit.
 			var overflowSignal = void 0;
 			if (a[0] && b[0]) {
 				overflowSignal = 0;
@@ -94,7 +95,7 @@ var ALU = function () {
 				overflowSignal = null;
 			};
 
-			//Because there is no carryover bit in the first operation, only half adder is required.
+			//Because there is no carry-in bit in the first operation, only half adder is required.
 			var output = Array(8);
 			var temp = this.halfAdder(a[7], b[7]);
 			output[7] = temp[0];
@@ -171,7 +172,7 @@ var ALU = function () {
 	}, {
 		key: 'lNegate',
 		value: function lNegate(n) {
-			//Abstraction of a NOT gate for all bits
+			//Abstraction of NOT gates for all bits
 			for (var i = 0; i < 8; i++) {
 				n[i] ? n[i] = 0 : n[i] = 1;
 			}
