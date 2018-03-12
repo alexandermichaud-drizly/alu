@@ -2,17 +2,18 @@ class ALU {
 
 	//Each "instance" of the class must be initialized with inputs at hand. 
 	//Program assumes that inputs are eight item arrays of 1's and 0's, e.g. [0, 1, 1, 0, 0, 1, 1, 1].
-	//Two's complement dictates that the leftmost bit will be a signed bit, and so the ALU can handle numbers from to -127 to 127.
-	constructor(inputA, inputB) {
-		this._alpha = inputA;
-		this._beta = inputB;
-		this._output = Array(8);
-		this._overflowFlag = 0
+	//Two's complement dictates that the leftmost bit will be a signed bit, and so the ALU can handle numbers from to -128 to 127.
+	constructor(alpha, beta) {
+		this._alpha = alpha;
+		this._beta = beta;
+		this._overflowFlag = 0;
 	}
 	
 	//Once created, the same inputs can then be used to generate different results depending on the opcode passed.
 	//Program assumes that inputs are four digit, pseudo-binary numbers, e.g [0, 1, 1, 1].
 	run(opcode) {
+		this._overflowFlag = 0;
+		
 		//0001 --> ADD
 		if (!opcode[0] && !opcode[1] && !opcode[2] && opcode[3]) {
 			return this.eightBitAddition(this._alpha, this._beta);
@@ -62,6 +63,7 @@ class ALU {
 		else if (opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
 			return this.aNegate(this._beta);
 		}
+
 	}
 
 	//Logical Negation, i.e. flipping all bits
@@ -69,10 +71,10 @@ class ALU {
 	
 		//Abstraction of a NOT gate for all bits
 		for (let i = 0; i < 8; i++) {
-			n[i] ? this._output[i] = 0 : this._output[i] = 1;	
+			n[i] ? n[i] = 0 : n[i] = 1;	
 		}
 		
-		return this._output;
+		return n;
 	}
 
 	//Arithmetic Negation, i.e. two's complement of the input
@@ -100,20 +102,22 @@ class ALU {
 		else {overflowSignal = null};
 
 		//Because there is no carryover bit in the first operation, only half adder is required.
+		let output = Array(8);
 		let temp = this.halfAdder(a[7],b[7]);
-		this._output[7] = temp[0];
+		output[7] = temp[0];
 		
 		//This is an abstraction of passing each of the remaining seven bits into full adders, while using the carry bits of previous sum in the operation for the following two bits.
 		for (let i = 6; i > -1; i--) {
 			temp = this.fullAdder(a[i], b[i], temp[1]);
-			this._output[i] = temp[0];
+			output[i] = temp[0];
 		}
 
 		//Checks for overflow
-		this._output[0] === overflowSignal ? this._overflowFlag = 1 : this._overflowFlag = 0;
-
+		output[0] === overflowSignal ? this._overflowFlag = 1 : this._overflowFlag = 0;
+		this.checkOverflow();
+		
 		//Returns output
-		return this._output;
+		return output;
 	}
 	
 
@@ -153,6 +157,10 @@ class ALU {
 			//Subtraction can be accomplished by arithmetically negating the subtrahend.
 			let subtrahend = this.aNegate(b);
 			return this.eightBitAddition(a, subtrahend);
+	}
+
+	checkOverflow() {
+		if (this._overflowFlag === 1) {console.log('***OVERFLOW ERROR***');}
 	}
 
 }

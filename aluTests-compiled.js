@@ -16,8 +16,12 @@ function test(testDescription, result, correctResult) {
 	result = JSON.stringify(result);
 	correctResult = JSON.stringify(correctResult);
 
-	result === correctResult ? console.log('Test passed. \n Output: ' + result + '.\n') : console.log('Test failed. \n Correct Result: ' + correctResult + '. \n Actual  Result: ' + result + '.\n');
+	result === correctResult ? console.log('Test passed. \n Output: ' + result + '\n') : console.log('Test failed. \n Correct Result: ' + correctResult + ' \n Actual  Result: ' + result + '\n');
 }
+
+//
+// Arithmetic Tests
+//
 
 //Addition of Two Positives // 15 + 13 = 28
 var test_1 = new _aluCompiled2.default([0, 0, 0, 0, 1, 1, 1, 1], [0, 0, 0, 0, 1, 1, 0, 1]);
@@ -59,94 +63,105 @@ var test_8 = new _aluCompiled2.default([0, 0, 0, 0, 1, 1, 0, 1], [1, 1, 1, 1, 0,
 var results_8 = test_8.run([0, 0, 1, 0]);
 test('Positive minus Negative', results_8, [0, 0, 0, 1, 1, 1, 0, 0]);
 
+//
 //Non-Arithmetic Tests
+//
 
 var posTests = new _aluCompiled2.default([0, 0, 0, 0, 1, 1, 1, 1], [0, 0, 0, 0, 1, 1, 0, 1]);
 var negTests = new _aluCompiled2.default([1, 1, 1, 1, 0, 0, 0, 1], [1, 1, 1, 1, 0, 0, 1, 1]);
 
-//Increment Positive Alpha // ++15
+//Increment
+//Positive Alpha // ++15
 var results_9 = posTests.run([0, 0, 1, 1]);
-
-//Increment Positive Beta // ++13
-var results_10 = posTests.run([0, 1, 0, 0]);
-
-//Increment Negative Alpha // ++(-15)
-var results_11 = negTests.run([0, 0, 1, 1]);
-
-//Increment Negative Beta // ++(-13)
-var results_12 = negTests.run([0, 1, 0, 0]);
-
 test('Increment positive alpha', results_9, [0, 0, 0, 1, 0, 0, 0, 0]);
+
+//Positive Beta // ++13
+var results_10 = posTests.run([0, 1, 0, 0]);
 test('Increment positive beta', results_10, [0, 0, 0, 0, 1, 1, 1, 0]);
+
+//Negative Alpha // ++(-15)
+var results_11 = negTests.run([0, 0, 1, 1]);
 test('Increment negative alpha', results_11, [1, 1, 1, 1, 0, 0, 1, 0]);
+
+//Negative Beta // ++(-13)
+var results_12 = negTests.run([0, 1, 0, 0]);
 test('Increment negative beta', results_12, [1, 1, 1, 1, 0, 1, 0, 0]);
 
-//Decrement Positive Alpha // --15
+//Decrement
+//Positive Alpha // --15
 var results_13 = posTests.run([0, 1, 0, 1]);
-
-//Decrement Positive Beta // --13
-var results_14 = posTests.run([0, 1, 1, 0]);
-
-//Decrement Negative Alpha // --(-15)
-var results_15 = negTests.run([0, 1, 0, 1]);
-
-//Decrement Negative Beta // --(-13)
-var results_16 = negTests.run([0, 1, 1, 0]);
-
 test('Decrement positive alpha', results_13, [0, 0, 0, 0, 1, 1, 1, 0]);
+
+//Positive Beta // --13
+var results_14 = posTests.run([0, 1, 1, 0]);
 test('Decrement positive beta', results_14, [0, 0, 0, 0, 1, 1, 0, 0]);
+
+//Negative Alpha // --(-15)
+var results_15 = negTests.run([0, 1, 0, 1]);
 test('Decrement negative alpha', results_15, [1, 1, 1, 1, 0, 0, 0, 0]);
+
+//Negative Beta // --(-13)
+var results_16 = negTests.run([0, 1, 1, 0]);
 test('Decrement negative beta', results_16, [1, 1, 1, 1, 0, 0, 1, 0]);
 
-//L Negate Positive Alpha // 00001111 => 11110000
+//Logically Negate
+//Positive Alpha // 00001111 => 11110000
 var results_17 = posTests.run([0, 1, 1, 1]);
-
-//L Negate Positive Beta // 00001101 => 11110010
-var results_18 = posTests.run([1, 0, 0, 0]);
-
-//L Negate Negative Alpha // 11110001 => 00001110
-var results_19 = negTests.run([0, 1, 1, 1]);
-
-//L Negate Negative Beta // 11110011 => 00001100
-var results_20 = negTests.run([1, 0, 0, 0]);
-
 test('L Negate positive alpha', results_17, [1, 1, 1, 1, 0, 0, 0, 0]);
+
+//Positive Beta // 00001101 => 11110010
+var results_18 = posTests.run([1, 0, 0, 0]);
 test('L Negate positive beta', results_18, [1, 1, 1, 1, 0, 0, 1, 0]);
+
+//Negative Alpha // 11110001 => 00001110
+var results_19 = negTests.run([0, 1, 1, 1]);
 test('L Negate negative alpha', results_19, [0, 0, 0, 0, 1, 1, 1, 0]);
+
+//Negative Beta // 11110011 => 00001100
+var results_20 = negTests.run([1, 0, 0, 0]);
 test('L Negate negative beta', results_20, [0, 0, 0, 0, 1, 1, 0, 0]);
 
-//A Negate Positive Alpha // 00001111 => 11110001
+//Arithmetically Negate
+//Positive Alpha // 00001111 => 11110001
 var results_21 = posTests.run([1, 0, 0, 1]);
-
-//A Negate Positive Beta // 00001101 => 11110011
-var results_22 = posTests.run([1, 0, 1, 0]);
-
-//A Negate Negative Alpha // 11110001 => 00001111
-var results_23 = negTests.run([1, 0, 0, 1]);
-
-//A Negate Negative Beta // 11110011 => 00001101
-var results_24 = negTests.run([1, 0, 1, 0]);
-
 test('A Negate positive alpha', results_21, [1, 1, 1, 1, 0, 0, 0, 1]);
+
+//Positive Beta // 00001101 => 11110011
+var results_22 = posTests.run([1, 0, 1, 0]);
 test('A Negate positive beta', results_22, [1, 1, 1, 1, 0, 0, 1, 1]);
+
+//Negative Alpha // 11110001 => 00001111
+var results_23 = negTests.run([1, 0, 0, 1]);
 test('A Negate negative alpha', results_23, [0, 0, 0, 0, 1, 1, 1, 1]);
+
+//Negative Beta // 11110011 => 00001101
+var results_24 = negTests.run([1, 0, 1, 0]);
 test('A Negate negative beta', results_24, [0, 0, 0, 0, 1, 1, 0, 1]);
 
+//
 //Overflow Tests
+//
+
 function testOverflow(description, test, opcode) {
-	console.log('\n ' + description + ':');
-	test.run(opcode);
-	if (test._overflowFlag) {
-		console.log('**OVERFLOW**');
-	}
+	console.log('\n' + description + ':');
+	console.log(JSON.stringify(test.run(opcode)));
 }
 
 var largePositives = new _aluCompiled2.default([0, 1, 1, 1, 1, 1, 1, 1], [0, 1, 1, 1, 1, 1, 1, 1]);
 var largeNegatives = new _aluCompiled2.default([1, 0, 0, 0, 0, 0, 0, 1], [1, 0, 0, 0, 0, 0, 0, 1]);
+var largerNegatives = new _aluCompiled2.default([1, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0]);
+var edge = new _aluCompiled2.default([1, 1, 1, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 0, 0, 0]);
 
+//Should Overflow:
 testOverflow('Adding large positives', largePositives, [0, 0, 0, 1]);
-testOverflow('Adding large negatives', largeNegatives, [0, 0, 0, 1]);
+testOverflow('Adding large negatives', largerNegatives, [0, 0, 0, 1]);
 testOverflow('Increment overflow alpha', largePositives, [0, 0, 1, 1]);
 testOverflow('Increment overflow beta', largePositives, [0, 1, 0, 0]);
-testOverflow('Decrement overflow alpha', largeNegatives, [0, 1, 0, 1]);
-testOverflow('Decrement overflow beta', largeNegatives, [0, 1, 1, 0]);
+testOverflow('Decrement overflow alpha', largerNegatives, [0, 1, 0, 1]);
+testOverflow('Decrement overflow beta', largerNegatives, [0, 1, 1, 0]);
+
+//Should not overflow:
+testOverflow('Decrement no overflow alpha', largeNegatives, [0, 1, 0, 1]);
+testOverflow('Decrement no overflow beta', largeNegatives, [0, 1, 1, 0]);
+testOverflow('Increment -1 no overflow', edge, [0, 0, 1, 1]);
+testOverflow('Decrement 0 no overflow', edge, [0, 1, 1, 0]);

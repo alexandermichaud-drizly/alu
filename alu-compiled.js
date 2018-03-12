@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -12,13 +12,12 @@ var ALU = function () {
 
 	//Each "instance" of the class must be initialized with inputs at hand. 
 	//Program assumes that inputs are eight item arrays of 1's and 0's, e.g. [0, 1, 1, 0, 0, 1, 1, 1].
-	//Two's complement dictates that the leftmost bit will be a signed bit, and so the ALU can handle numbers from to -127 to 127.
-	function ALU(inputA, inputB) {
+	//Two's complement dictates that the leftmost bit will be a signed bit, and so the ALU can handle numbers from to -128 to 127.
+	function ALU(alpha, beta) {
 		_classCallCheck(this, ALU);
 
-		this._alpha = inputA;
-		this._beta = inputB;
-		this._output = Array(8);
+		this._alpha = alpha;
+		this._beta = beta;
 		this._overflowFlag = 0;
 	}
 
@@ -27,8 +26,10 @@ var ALU = function () {
 
 
 	_createClass(ALU, [{
-		key: "run",
+		key: 'run',
 		value: function run(opcode) {
+			this._overflowFlag = 0;
+
 			//0001 --> ADD
 			if (!opcode[0] && !opcode[1] && !opcode[2] && opcode[3]) {
 				return this.eightBitAddition(this._alpha, this._beta);
@@ -83,37 +84,37 @@ var ALU = function () {
 		//Logical Negation, i.e. flipping all bits
 
 	}, {
-		key: "lNegate",
+		key: 'lNegate',
 		value: function lNegate(n) {
 
 			//Abstraction of a NOT gate for all bits
 			for (var i = 0; i < 8; i++) {
-				n[i] ? this._output[i] = 0 : this._output[i] = 1;
+				n[i] ? n[i] = 0 : n[i] = 1;
 			}
 
-			return this._output;
+			return n;
 		}
 
 		//Arithmetic Negation, i.e. two's complement of the input
 
 	}, {
-		key: "aNegate",
+		key: 'aNegate',
 		value: function aNegate(n) {
 			var m = this.lNegate(n);
 			return this.increment(m);
 		}
 	}, {
-		key: "increment",
+		key: 'increment',
 		value: function increment(n) {
 			return this.eightBitAddition(n, [0, 0, 0, 0, 0, 0, 0, 1]);
 		}
 	}, {
-		key: "decrement",
+		key: 'decrement',
 		value: function decrement(n) {
 			return this.eightBitAddition(n, [1, 1, 1, 1, 1, 1, 1, 1]);
 		}
 	}, {
-		key: "eightBitAddition",
+		key: 'eightBitAddition',
 		value: function eightBitAddition(a, b) {
 
 			//Two's complement accounts for negatives, which by extension accounts for subtraction. 
@@ -129,23 +130,25 @@ var ALU = function () {
 			};
 
 			//Because there is no carryover bit in the first operation, only half adder is required.
+			var output = Array(8);
 			var temp = this.halfAdder(a[7], b[7]);
-			this._output[7] = temp[0];
+			output[7] = temp[0];
 
 			//This is an abstraction of passing each of the remaining seven bits into full adders, while using the carry bits of previous sum in the operation for the following two bits.
 			for (var i = 6; i > -1; i--) {
 				temp = this.fullAdder(a[i], b[i], temp[1]);
-				this._output[i] = temp[0];
+				output[i] = temp[0];
 			}
 
 			//Checks for overflow
-			this._output[0] === overflowSignal ? this._overflowFlag = 1 : this._overflowFlag = 0;
+			output[0] === overflowSignal ? this._overflowFlag = 1 : this._overflowFlag = 0;
+			this.checkOverflow();
 
 			//Returns output
-			return this._output;
+			return output;
 		}
 	}, {
-		key: "halfAdder",
+		key: 'halfAdder',
 		value: function halfAdder(a, b) {
 			var sum = void 0;
 			var carry = void 0;
@@ -167,7 +170,7 @@ var ALU = function () {
 		//Function passes default value of zero for carry bit for when this is the first operation performed.
 
 	}, {
-		key: "fullAdder",
+		key: 'fullAdder',
 		value: function fullAdder(a, b) {
 			var c = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
@@ -181,11 +184,18 @@ var ALU = function () {
 			return [fullSum[0], carry];
 		}
 	}, {
-		key: "eightBitSubtraction",
+		key: 'eightBitSubtraction',
 		value: function eightBitSubtraction(a, b) {
 			//Subtraction can be accomplished by arithmetically negating the subtrahend.
 			var subtrahend = this.aNegate(b);
 			return this.eightBitAddition(a, subtrahend);
+		}
+	}, {
+		key: 'checkOverflow',
+		value: function checkOverflow() {
+			if (this._overflowFlag === 1) {
+				console.log('***OVERFLOW ERROR***');
+			}
 		}
 	}]);
 
