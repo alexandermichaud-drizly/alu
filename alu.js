@@ -68,12 +68,10 @@ class ALU {
 
 	//Logical Negation, i.e. flipping all bits
 	lNegate(n) {
-	
 		//Abstraction of a NOT gate for all bits
 		for (let i = 0; i < 8; i++) {
 			n[i] ? n[i] = 0 : n[i] = 1;	
 		}
-		
 		return n;
 	}
 

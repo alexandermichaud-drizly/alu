@@ -86,12 +86,11 @@ var ALU = function () {
 	}, {
 		key: 'lNegate',
 		value: function lNegate(n) {
-
 			//Abstraction of a NOT gate for all bits
-			for (var i = 0; i < 8; i++) {
+			var i = 0;
+			for (i; i < 8; i++) {
 				n[i] ? n[i] = 0 : n[i] = 1;
 			}
-
 			return n;
 		}
 
@@ -101,7 +100,8 @@ var ALU = function () {
 		key: 'aNegate',
 		value: function aNegate(n) {
 			var m = this.lNegate(n);
-			return this.increment(m);
+			var output = this.increment(m);
+			return output;
 		}
 	}, {
 		key: 'increment',

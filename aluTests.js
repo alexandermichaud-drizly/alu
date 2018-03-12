@@ -13,9 +13,11 @@ function test(testDescription, result, correctResult) {
 	result === correctResult ? console.log(`Test passed. \n Output: ${result}\n`) : console.log(`Test failed. \n Correct Result: ${correctResult} \n Actual  Result: ${result}\n`);
 }
 
+
 //
 // Arithmetic Tests
 //
+
 
 //Addition of Two Positives // 15 + 13 = 28
 let test_1 = new ALU([0,0,0,0,1,1,1,1], [0,0,0,0,1,1,0,1]);
@@ -58,9 +60,11 @@ let test_8 = new ALU([0,0,0,0,1,1,0,1], [1,1,1,1,0,0,0,1]);
 let results_8 = test_8.run([0,0,1,0]);
 test('Positive minus Negative', results_8, [0,0,0,1,1,1,0,0]);
 
+
 //
 //Non-Arithmetic Tests
 //
+
 
 let posTests = new ALU([0,0,0,0,1,1,1,1], [0,0,0,0,1,1,0,1]);
 let negTests = new ALU([1,1,1,1,0,0,0,1], [1,1,1,1,0,0,1,1]);
@@ -137,9 +141,11 @@ test('A Negate negative alpha', results_23, [0,0,0,0,1,1,1,1]);
 let results_24 = negTests.run([1,0,1,0]);
 test('A Negate negative beta', results_24, [0,0,0,0,1,1,0,1]);
 
+
 //
 //Overflow Tests
 //
+
 
 function testOverflow(description, test, opcode) {
 	console.log(`\n${description}:`);
