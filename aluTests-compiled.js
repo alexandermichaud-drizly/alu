@@ -89,23 +89,6 @@ test('Increment negative alpha', results_11, [1, 1, 1, 1, 0, 0, 1, 0]);
 var results_12 = negTests.run([0, 1, 0, 0]);
 test('Increment negative beta', results_12, [1, 1, 1, 1, 0, 1, 0, 0]);
 
-//Logically Negate
-//Positive Alpha // 00001111 => 11110000
-var results_17 = posTests.run([0, 1, 1, 1]);
-test('L Negate positive alpha', results_17, [1, 1, 1, 1, 0, 0, 0, 0]);
-
-//Positive Beta // 00001101 => 11110010
-var results_18 = posTests.run([1, 0, 0, 0]);
-test('L Negate positive beta', results_18, [1, 1, 1, 1, 0, 0, 1, 0]);
-
-//Negative Alpha // 11110001 => 00001110
-var results_19 = negTests.run([0, 1, 1, 1]);
-test('L Negate negative alpha', results_19, [0, 0, 0, 0, 1, 1, 1, 0]);
-
-//Negative Beta // 11110011 => 00001100
-var results_20 = negTests.run([1, 0, 0, 0]);
-test('L Negate negative beta', results_20, [0, 0, 0, 0, 1, 1, 0, 0]);
-
 //Decrement
 //Positive Alpha // --15
 var results_13 = posTests.run([0, 1, 0, 1]);
@@ -122,6 +105,23 @@ test('Decrement negative alpha', results_15, [1, 1, 1, 1, 0, 0, 0, 0]);
 //Negative Beta // --(-13)
 var results_16 = negTests.run([0, 1, 1, 0]);
 test('Decrement negative beta', results_16, [1, 1, 1, 1, 0, 0, 1, 0]);
+
+//Logically Negate
+//Positive Alpha // 00001111 => 11110000
+var results_17 = posTests.run([0, 1, 1, 1]);
+test('L Negate positive alpha', results_17, [1, 1, 1, 1, 0, 0, 0, 0]);
+
+//Positive Beta // 00001101 => 11110010
+var results_18 = posTests.run([1, 0, 0, 0]);
+test('L Negate positive beta', results_18, [1, 1, 1, 1, 0, 0, 1, 0]);
+
+//Negative Alpha // 11110001 => 00001110
+var results_19 = negTests.run([0, 1, 1, 1]);
+test('L Negate negative alpha', results_19, [0, 0, 0, 0, 1, 1, 1, 0]);
+
+//Negative Beta // 11110011 => 00001100
+var results_20 = negTests.run([1, 0, 0, 0]);
+test('L Negate negative beta', results_20, [0, 0, 0, 0, 1, 1, 0, 0]);
 
 //Arithmetically Negate
 //Positive Alpha // 00001111 => 11110001

@@ -63,35 +63,10 @@ class ALU {
 		else if (opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
 			return this.aNegate(this._beta);
 		}
-
-	}
-
-	//Logical Negation, i.e. flipping all bits
-	lNegate(n) {
-		//Abstraction of a NOT gate for all bits
-		for (let i = 0; i < 8; i++) {
-			n[i] ? n[i] = 0 : n[i] = 1;	
-		}
-		return n;
-	}
-
-	//Arithmetic Negation, i.e. two's complement of the input
-	aNegate(n) {
-		let m = this.lNegate(n);
-		return this.increment(m);
-	}
-	
-	increment(n) {
-		return this.eightBitAddition(n, [0,0,0,0,0,0,0,1]);
-	}
-
-	decrement(n) {
-		return this.eightBitAddition(n, [1,1,1,1,1,1,1,1]);
 	}
 
 	eightBitAddition(a, b) {
 
-		//Two's complement accounts for negatives, which by extension accounts for subtraction. 
 		
 		//First the program must note the signs of the inputs, which will throw an overflow flag if there is carry into the sign bit.
 		let overflowSignal;
@@ -152,13 +127,36 @@ class ALU {
 	}
 
 	eightBitSubtraction(a, b) {
-			//Subtraction can be accomplished by arithmetically negating the subtrahend.
+			//Subtraction can be accomplished by arithmetically negating the subtrahend and just performing addition.
 			let subtrahend = this.aNegate(b);
 			return this.eightBitAddition(a, subtrahend);
 	}
 
+	increment(n) {
+		return this.eightBitAddition(n, [0,0,0,0,0,0,0,1]);
+	}
+
+	decrement(n) {
+		return this.eightBitAddition(n, [1,1,1,1,1,1,1,1]);
+	}
+
+	//Logical Negation, i.e. flipping all bits
+	lNegate(n) {
+		//Abstraction of a NOT gate for all bits
+		for (let i = 0; i < 8; i++) {
+			n[i] ? n[i] = 0 : n[i] = 1;	
+		}
+		return n;
+	}
+
+	//Arithmetic Negation, i.e. two's complement of the input
+	aNegate(n) {
+		let m = this.lNegate(n);
+		return this.increment(m);
+	}
+	
 	checkOverflow() {
-		if (this._overflowFlag === 1) {console.log('***OVERFLOW ERROR***');}
+		if (this._overflowFlag) {console.log('***OVERFLOW ERROR***');}
 	}
 
 }

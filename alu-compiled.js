@@ -80,44 +80,9 @@ var ALU = function () {
 													return this.aNegate(this._beta);
 												}
 		}
-
-		//Logical Negation, i.e. flipping all bits
-
-	}, {
-		key: 'lNegate',
-		value: function lNegate(n) {
-			//Abstraction of a NOT gate for all bits
-			var i = 0;
-			for (i; i < 8; i++) {
-				n[i] ? n[i] = 0 : n[i] = 1;
-			}
-			return n;
-		}
-
-		//Arithmetic Negation, i.e. two's complement of the input
-
-	}, {
-		key: 'aNegate',
-		value: function aNegate(n) {
-			var m = this.lNegate(n);
-			var output = this.increment(m);
-			return output;
-		}
-	}, {
-		key: 'increment',
-		value: function increment(n) {
-			return this.eightBitAddition(n, [0, 0, 0, 0, 0, 0, 0, 1]);
-		}
-	}, {
-		key: 'decrement',
-		value: function decrement(n) {
-			return this.eightBitAddition(n, [1, 1, 1, 1, 1, 1, 1, 1]);
-		}
 	}, {
 		key: 'eightBitAddition',
 		value: function eightBitAddition(a, b) {
-
-			//Two's complement accounts for negatives, which by extension accounts for subtraction. 
 
 			//First the program must note the signs of the inputs, which will throw an overflow flag if there is carry into the sign bit.
 			var overflowSignal = void 0;
@@ -186,14 +151,45 @@ var ALU = function () {
 	}, {
 		key: 'eightBitSubtraction',
 		value: function eightBitSubtraction(a, b) {
-			//Subtraction can be accomplished by arithmetically negating the subtrahend.
+			//Subtraction can be accomplished by arithmetically negating the subtrahend and just performing addition.
 			var subtrahend = this.aNegate(b);
 			return this.eightBitAddition(a, subtrahend);
 		}
 	}, {
+		key: 'increment',
+		value: function increment(n) {
+			return this.eightBitAddition(n, [0, 0, 0, 0, 0, 0, 0, 1]);
+		}
+	}, {
+		key: 'decrement',
+		value: function decrement(n) {
+			return this.eightBitAddition(n, [1, 1, 1, 1, 1, 1, 1, 1]);
+		}
+
+		//Logical Negation, i.e. flipping all bits
+
+	}, {
+		key: 'lNegate',
+		value: function lNegate(n) {
+			//Abstraction of a NOT gate for all bits
+			for (var i = 0; i < 8; i++) {
+				n[i] ? n[i] = 0 : n[i] = 1;
+			}
+			return n;
+		}
+
+		//Arithmetic Negation, i.e. two's complement of the input
+
+	}, {
+		key: 'aNegate',
+		value: function aNegate(n) {
+			var m = this.lNegate(n);
+			return this.increment(m);
+		}
+	}, {
 		key: 'checkOverflow',
 		value: function checkOverflow() {
-			if (this._overflowFlag === 1) {
+			if (this._overflowFlag) {
 				console.log('***OVERFLOW ERROR***');
 			}
 		}
