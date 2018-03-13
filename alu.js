@@ -70,7 +70,7 @@ class ALU {
 		else if (!a[0] && !b[0]) {overflowSignal = 1}
 		else {overflowSignal = null};
 
-		//Because there is no carry-in bit in the first operation, only half adder is required.
+		//Because there is no bit carried into the first operation, only half adder is required.
 		let output = Array(8);
 		let temp = this.halfAdder(a[7],b[7]);
 		output[7] = temp[0];
@@ -138,11 +138,13 @@ class ALU {
 
 	//Logical Negation, i.e. flipping all bits
 	lNegate(n) {
+		let output = Array(8);
+		
 		//Abstraction of NOT gates for all bits
 		for (let i = 0; i < 8; i++) {
-			n[i] ? n[i] = 0 : n[i] = 1;	
+			n[i] ? output[i] = 0 : output[i] = 1;	
 		}
-		return n;
+		return output;
 	}
 
 	//Arithmetic Negation, i.e. two's complement of the input

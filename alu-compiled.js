@@ -9,75 +9,69 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ALU = function () {
-
-	//Each "instance" of the class must be initialized with inputs at hand. 
-	//Program assumes that inputs are eight item arrays of 1's and 0's, e.g. [0, 1, 1, 0, 0, 1, 1, 1].
-	//Two's complement dictates that the leftmost bit will be a signed bit, and so the ALU can handle numbers from to -128 to 127.
-	function ALU(alpha, beta) {
+	function ALU() {
 		_classCallCheck(this, ALU);
 
-		this._alpha = alpha;
-		this._beta = beta;
 		this._overflowFlag = 0;
 	}
 
-	//Once created, the same inputs can then be used to generate different results depending on the opcode passed.
-	//Program assumes that inputs are four digit, pseudo-binary numbers, e.g [0, 1, 1, 1].
+	//Program assumes that inputs are eight item arrays of 1's and 0's, e.g. [0, 1, 1, 0, 0, 1, 1, 1].
+	//Program assumes that opcodes are four digit, pseudo-binary numbers, e.g [0, 1, 1, 1].
 
 
 	_createClass(ALU, [{
 		key: 'run',
-		value: function run(opcode) {
+		value: function run(alpha, beta, opcode) {
 			this._overflowFlag = 0;
 
 			//0001 --> ADD
 			if (!opcode[0] && !opcode[1] && !opcode[2] && opcode[3]) {
-				return this.eightBitAddition(this._alpha, this._beta);
+				return this.eightBitAddition(alpha, beta);
 			}
 
 			//0010 --> SUBTRACT
 			else if (!opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
-					return this.eightBitSubtraction(this._alpha, this._beta);
+					return this.eightBitSubtraction(alpha, beta);
 				}
 
 				//0011 --> INCREMENT ALPHA
 				else if (!opcode[0] && !opcode[1] && opcode[2] && opcode[3]) {
-						return this.increment(this._alpha);
+						return this.increment(alpha);
 					}
 
 					//0100 --> INCREMENT BETA
 					else if (!opcode[0] && opcode[1] && !opcode[2] && !opcode[3]) {
-							return this.increment(this._beta);
+							return this.increment(beta);
 						}
 
 						//0101 --> DECREMENT ALPHA
 						else if (!opcode[0] && opcode[1] && !opcode[2] && opcode[3]) {
-								return this.decrement(this._alpha);
+								return this.decrement(alpha);
 							}
 
 							//0110 --> DECREMENT BETA
 							else if (!opcode[0] && opcode[1] && opcode[2] && !opcode[3]) {
-									return this.decrement(this._beta);
+									return this.decrement(beta);
 								}
 
 								//0111 --> LOGICALLY NEGATE ALPHA
 								else if (!opcode[0] && opcode[1] && opcode[2] && opcode[3]) {
-										return this.lNegate(this._alpha);
+										return this.lNegate(alpha);
 									}
 
 									//1000 --> LOGICALLY NEGATE BETA
 									else if (opcode[0] && !opcode[1] && !opcode[2] && !opcode[3]) {
-											return this.lNegate(this._beta);
+											return this.lNegate(beta);
 										}
 
 										//1001 --> ARITHMETICALLY NEGATE ALPHA
 										else if (opcode[0] && !opcode[1] && !opcode[2] && opcode[3]) {
-												return this.aNegate(this._alpha);
+												return this.aNegate(alpha);
 											}
 
 											//1010 --> ARTIHMETICALLY NEGATE BETA
 											else if (opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
-													return this.aNegate(this._beta);
+													return this.aNegate(beta);
 												}
 		}
 	}, {
@@ -172,11 +166,13 @@ var ALU = function () {
 	}, {
 		key: 'lNegate',
 		value: function lNegate(n) {
+			var output = Array(8);
+
 			//Abstraction of NOT gates for all bits
 			for (var i = 0; i < 8; i++) {
-				n[i] ? n[i] = 0 : n[i] = 1;
+				n[i] ? output[i] = 0 : output[i] = 1;
 			}
-			return n;
+			return output;
 		}
 
 		//Arithmetic Negation, i.e. two's complement of the input
