@@ -89,7 +89,7 @@ var ALU = function () {
 				overflowSignal = null;
 			};
 
-			//Because there is no carry-in bit in the first operation, only half adder is required.
+			//Because there is no bit carried into the first operation, only half adder is required.
 			var output = Array(8);
 			var temp = this.halfAdder(a[7], b[7]);
 			output[7] = temp[0];
