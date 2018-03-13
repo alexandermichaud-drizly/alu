@@ -1,67 +1,62 @@
 class ALU {
-
-	//Each "instance" of the class must be initialized with inputs at hand. 
-	//Program assumes that inputs are eight item arrays of 1's and 0's, e.g. [0, 1, 1, 0, 0, 1, 1, 1].
-	//Two's complement dictates that the leftmost bit will be a signed bit, and so the ALU can handle numbers from to -128 to 127.
-	constructor(alpha, beta) {
-		this._alpha = alpha;
-		this._beta = beta;
+	
+	constructor() {
 		this._overflowFlag = 0;
 	}
-	
-	//Once created, the same inputs can then be used to generate different results depending on the opcode passed.
-	//Program assumes that inputs are four digit, pseudo-binary numbers, e.g [0, 1, 1, 1].
-	run(opcode) {
+
+	//Program assumes that inputs are eight item arrays of 1's and 0's, e.g. [0, 1, 1, 0, 0, 1, 1, 1].
+	//Program assumes that opcodes are four digit, pseudo-binary numbers, e.g [0, 1, 1, 1].
+	run(alpha, beta, opcode) {
 		this._overflowFlag = 0;
 		
 		//0001 --> ADD
 		if (!opcode[0] && !opcode[1] && !opcode[2] && opcode[3]) {
-			return this.eightBitAddition(this._alpha, this._beta);
+			return this.eightBitAddition(alpha, beta);
 		}
 		
 		//0010 --> SUBTRACT
 		else if (!opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
-			return this.eightBitSubtraction(this._alpha, this._beta);
+			return this.eightBitSubtraction(alpha, beta);
 		}
 
 		//0011 --> INCREMENT ALPHA
 		else if (!opcode[0] && !opcode[1] && opcode[2] && opcode[3]) {
-			return this.increment(this._alpha);
+			return this.increment(alpha);
 		}
 
 		//0100 --> INCREMENT BETA
 		else if (!opcode[0] && opcode[1] && !opcode[2] && !opcode[3]) {
-			return this.increment(this._beta);
+			return this.increment(beta);
 		}
 
 		//0101 --> DECREMENT ALPHA
 		else if (!opcode[0] && opcode[1] && !opcode[2] && opcode[3]) {
-			return this.decrement(this._alpha);
+			return this.decrement(alpha);
 		}
 		
 		//0110 --> DECREMENT BETA
 		else if (!opcode[0] && opcode[1] && opcode[2] && !opcode[3]) {
-			return this.decrement(this._beta);
+			return this.decrement(beta);
 		}
 
 		//0111 --> LOGICALLY NEGATE ALPHA
 		else if (!opcode[0] && opcode[1] && opcode[2] && opcode[3]) {
-			return this.lNegate(this._alpha);
+			return this.lNegate(alpha);
 		}
 
 		//1000 --> LOGICALLY NEGATE BETA
 		else if (opcode[0] && !opcode[1] && !opcode[2] && !opcode[3]) {
-			return this.lNegate(this._beta);
+			return this.lNegate(beta);
 		}
 
 		//1001 --> ARITHMETICALLY NEGATE ALPHA
 		else if (opcode[0] && !opcode[1] && !opcode[2] && opcode[3]) {
-			return this.aNegate(this._alpha);
+			return this.aNegate(alpha);
 		}
 
 		//1010 --> ARTIHMETICALLY NEGATE BETA
 		else if (opcode[0] && !opcode[1] && opcode[2] && !opcode[3]) {
-			return this.aNegate(this._beta);
+			return this.aNegate(beta);
 		}
 	}
 

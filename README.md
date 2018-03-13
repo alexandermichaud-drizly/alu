@@ -12,10 +12,11 @@ For example, each time a method such as .fullAdder() is called, it should be und
 Rather than writing out the same code seven times and designing the program as an interminable mess, I have simply represented the fullAdder as a method that is called seven times, making use of temporary variables as a substitute for the circuits that would, in real life, bring signals directly to the next logic gate in their path.  
 
 THE ALU AS A JAVASCRIPT CLASS
-I have chosen to represent the ALU as a class. This allows the same ALU "instance" to test the different operations on the same set of inputs. I recognize that this does not cohere with how an ALU is called within a CPU, but it is marginally easier to simply call .run(opcode) rather than run(a, b, opcode) when testing with the same variables. 
+In representing the ALU as a class, my original intention was that the ALU instances would be initialized with one set of inputs saved as object properties (this._inputA), in order to quickly test different operations on the same set of inputs. I realized, however, that the nature of JS objects dictates that operations performed with these inputs as arguments would change the values of the properties themselves, which would affect other operations. I rewrote the ALU and the tests such that the inputs are passed as arguments when the method .run is called. 
 
-NEGATIVE NUMBERS
-The ALU represents negatives using two's complement conversion. It cannot accomodate floating points.
+NUMERIC REPRESENTATION
+The ALU represents negatives using two's complement conversion. The leftmost bit is effectively a signed bit, so the ALU can hand inputs from -128 to 127.
+It cannot accomodate floating points.
 
 OPERATIONS THAT HAVE BEEN CODED AND TESTED SUCCESSFULLY:
 ADD, SUBTRACT, INCREMENT, DECREMENT, LOGICALLY NEGATE, OVERFLOW

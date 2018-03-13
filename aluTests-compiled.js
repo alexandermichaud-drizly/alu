@@ -106,6 +106,8 @@ test('Decrement negative alpha', results_15, [1, 1, 1, 1, 0, 0, 0, 0]);
 var results_16 = negTests.run([0, 1, 1, 0]);
 test('Decrement negative beta', results_16, [1, 1, 1, 1, 0, 0, 1, 0]);
 
+debugger;
+
 //Logically Negate
 //Positive Alpha // 00001111 => 11110000
 var results_17 = posTests.run([0, 1, 1, 1]);
